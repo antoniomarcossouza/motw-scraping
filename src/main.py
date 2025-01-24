@@ -20,7 +20,9 @@ def main():
         save_csv(page_content_df, DATA_DIR / "response.csv")
 
         page_items = page_content["_items"]
-        pprint(transform_data(page_items))
+        pprint(
+            [transform_data(item) for item in page_items][0]
+        )
 
 
 if __name__ == "__main__":

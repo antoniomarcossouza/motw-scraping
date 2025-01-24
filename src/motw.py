@@ -2,6 +2,7 @@ from pathlib import Path
 
 import httpx
 import pandas as pd
+from urllib.parse import quote_plus
 
 
 class MemoryOfTheWorldAPI:
@@ -27,4 +28,14 @@ def save_csv(df: pd.DataFrame, path: Path):
 
 
 def transform_data(data: dict):
+    def transform_format(fmt: dict):
+        fmt["url"] = (
+            f"{data['library_url']}{fmt.pop('dir_path')}{fmt.pop('file_name')}"
+        )
+        return fmt
+
+    data["id"] = data.pop("_id")
+    data["library_url"] = f'https:{data["library_url"]}'
+    data["cover_url"] = f"{data['library_url']}{data['cover_url']}"
+    data["formats"] = [transform_format(fmt) for fmt in data["formats"]]
     return data

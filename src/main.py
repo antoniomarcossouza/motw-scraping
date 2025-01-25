@@ -1,13 +1,17 @@
-import time
 from datetime import datetime
 from pathlib import Path
-from pprint import pprint
 
 import pandas as pd
 
-from motw import MemoryOfTheWorldAPI, save_csv, transform_data
+from motw import (
+    MemoryOfTheWorldAPI,
+    save_csv,
+    transform_book_data,
+    transform_page_data,
+)
 
 DATA_DIR = (Path() / "data").resolve()
+DATA_DIR.mkdir(exist_ok=True, parents=True)
 
 
 def main():
@@ -27,15 +31,20 @@ def main():
         save_csv(page_content_df, DATA_DIR / "response.csv")
 
         page_items = [
-            transform_data(data=item, page=page)
+            transform_page_data(data=item, page=page)
             for item in page_content["_items"]
         ]
         page_items_df = pd.DataFrame.from_records(page_items)
         save_csv(page_items_df, DATA_DIR / "items.csv")
 
-        pprint(motw.get_book_details(page_items[0]["id"]))
+        books = [
+            transform_book_data(motw.get_book_details(book["id"]))
+            for book in page_items
+        ]
+        books_df = pd.DataFrame.from_records(books)
+        save_csv(books_df, DATA_DIR / "books.csv")
 
-        time.sleep(1.5)
+        print(f"Page {page} done.")
 
 
 if __name__ == "__main__":

@@ -48,4 +48,7 @@ def transform_page_data(data: dict, page: int):
 
 
 def transform_book_data(data: dict):
+    data["id"] = data.pop("_id")
+    cleaned_abstract = data["abstract"].replace("\n", "  ")
+    data["abstract"] = cleaned_abstract
     return data

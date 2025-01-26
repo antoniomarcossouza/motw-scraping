@@ -16,6 +16,7 @@ def main():
         pages_dir.mkdir(exist_ok=True, parents=True)
         page_file = pages_dir / f"page_{page}.json"
 
+        # HACK: Skip existing pages while i debug the script
         if page_file.is_file():
             continue
 
